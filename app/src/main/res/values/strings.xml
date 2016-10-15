@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">Alexander Milikhin</string>
+
+    <string name="stark_name">Stark</string>
+    <string name="lann_name">Lannisters</string>
+    <string name="targ_name">Targaryens</string>
+</resources>
