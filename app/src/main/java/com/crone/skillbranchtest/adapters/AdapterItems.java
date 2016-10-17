@@ -98,7 +98,6 @@ public class AdapterItems extends RecyclerView.Adapter<AdapterItems.MyViewHolder
     @Override
     public void onBindViewHolder(MyViewHolder holder, int position) {
         holder.mTextView.setText(mDataset.get(position).name);
-
         holder.mTextDesc.setText(mDataset.get(position).titles);
 
     }

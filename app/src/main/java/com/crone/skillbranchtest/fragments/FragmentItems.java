@@ -1,5 +1,6 @@
 package com.crone.skillbranchtest.fragments;
 
+import android.content.res.Resources;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -12,23 +13,28 @@ import android.view.ViewGroup;
 import com.crone.skillbranchtest.R;
 import com.crone.skillbranchtest.adapters.AdapterItems;
 import com.crone.skillbranchtest.models.ItemsData;
+import com.crone.skillbranchtest.utils.MyConfig;
+
+import org.greenrobot.eventbus.EventBus;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 
 public class FragmentItems extends Fragment {
 
-    private static final String ARGUMENT_DATA = "arg_page_position";
-    private static final String ARGUMENT_ICON = "arg_icon";
-    private AdapterItems mAdapter;
-    private ArrayList<ItemsData> mData;
-    private int mIcon;
+    private static final String ARGUMENT_POSITION = "arg_page_position";
 
-    public FragmentItems newInstance(int resource,ArrayList<ItemsData> position) {
+    private AdapterItems mAdapter;
+    private int mPosition;
+
+
+    public FragmentItems newInstance(int position) {
         FragmentItems fragment = new FragmentItems();
         Bundle arguments = new Bundle();
-        arguments.putParcelableArrayList(ARGUMENT_DATA, position);
-        arguments.putInt(ARGUMENT_ICON, resource);
+        arguments.putInt(ARGUMENT_POSITION, position);
         fragment.setArguments(arguments);
         return fragment;
 
@@ -37,8 +43,7 @@ public class FragmentItems extends Fragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mData = getArguments().getParcelableArrayList(ARGUMENT_DATA);
-        mIcon = getArguments().getInt(ARGUMENT_ICON);
+        mPosition = getArguments().getInt(ARGUMENT_POSITION);
     }
 
     @Nullable
@@ -47,7 +52,8 @@ public class FragmentItems extends Fragment {
         View view = inflater.inflate(R.layout.fragment_items, container, false);
         RecyclerView rv = (RecyclerView) view.findViewById(R.id.recycle_view);
         rv.setHasFixedSize(true);
-        mAdapter = new AdapterItems(mData,mIcon);
+
+        mAdapter = new AdapterItems(getDataByPosition(mPosition), getIconByPosition(mPosition));
         rv.setAdapter(mAdapter);
         LinearLayoutManager llm = new LinearLayoutManager(getActivity());
         rv.setLayoutManager(llm);
@@ -59,14 +65,52 @@ public class FragmentItems extends Fragment {
         super.onViewCreated(view, savedInstanceState);
     }
 
+
+
     @Override
     public void onResume() {
         super.onResume();
         //When fragment is displayed that allowed to set data
-       //EventBus.getDefault().post(new MessageEvent(mPosition));
+        //EventBus.getDefault().post(new MessageEvent(mPosition));
+    }
+
+    /**
+     * Getting icon for tabs
+     * @param position - tabs number
+     * @return int resource
+     */
+    private int getIconByPosition(int position){
+        switch (position) {
+            case 0:
+                return R.drawable.stark_icon;
+            case 1:
+                return R.drawable.lanister_icon;
+            case 2:
+                return R.drawable.targ_icon;
+            default:
+                return R.mipmap.ic_launcher;
+        }
     }
 
 
+    /**
+     * Getting data for RecycleView
+     * @param position - tabs number
+     * @return ArrayList with items
+     */
+    private ArrayList<ItemsData> getDataByPosition(int position){
+        Map<String, ArrayList<ItemsData>> data = EventBus.getDefault().getStickyEvent(HashMap.class);
+        switch (position) {
+            case 0:
+                return data.get(MyConfig.STARK_ARG);
+            case 1:
+                return data.get(MyConfig.LANNISTER_ARG);
+            case 2:
+                return data.get(MyConfig.TARGARYEN_ARG);
+            default:
+                return null;
+        }
+    }
 
 
 }

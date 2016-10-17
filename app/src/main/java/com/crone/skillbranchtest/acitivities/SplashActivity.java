@@ -28,10 +28,13 @@ import com.crone.skillbranchtest.utils.MyConfig;
 import com.crone.skillbranchtest.utils.NetworkStatusChecker;
 import com.squareup.picasso.Picasso;
 
+import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.greendao.query.WhereCondition;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -74,6 +77,7 @@ public class SplashActivity extends AppCompatActivity {
 
 
         ImageView splashImage = (ImageView) findViewById(R.id.splashImage);
+
         Picasso.with(this).load(R.drawable.background_splash).fit().centerCrop().into(splashImage);
 
         mSharedPreferences = getPreferences(MODE_PRIVATE);
@@ -201,12 +205,18 @@ public class SplashActivity extends AppCompatActivity {
 
     void startWriteData(){
         //Start new Thread where happens collection of specific information
-        Thread myThread = new Thread(new Runnable() {
+        final Thread myThread = new Thread(new Runnable() {
             @Override
             public void run() {
+                try {
+                    //delay
+                    Thread.sleep(2000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
                 for (int i = 0; i < mPersonDao.count(); i++) {
 
-                    ItemsData data = new ItemsData(Parcel.obtain());
+                    ItemsData data = new ItemsData();
                     data.id = mPersonDao.queryBuilder().list().get(i).getPersonRemoteId();
                     data.idHouse = mPersonDao.queryBuilder().list().get(i).getPersonHouseRemoteId();
                     data.name = mPersonDao.queryBuilder().list().get(i).getName();
@@ -219,14 +229,7 @@ public class SplashActivity extends AppCompatActivity {
                             data.titles += t.get(n).getCharacteristic();
                         }
                     }
-                   /* if(data.titles.equals("")){
-                        for (int r = 0; r < mHouseDao.count(); r++) {
-                           if(mHouseDao.queryBuilder().list().get(r).getRemoteId() == data.idHouse){
-                               data.titles = mHouseDao.queryBuilder().list().get(r).getWords();
-                           }
-                        }
 
-                    }*/
                     if (data.idHouse == MyConfig.STARK_ID) {
                         starkItems.add(data);
                     } else if (data.idHouse == MyConfig.LANNISTER_ID) {
@@ -237,11 +240,13 @@ public class SplashActivity extends AppCompatActivity {
 
 
                 }
+                Map<String, ArrayList<ItemsData>> data = new HashMap<>();
+                data.put(MyConfig.STARK_ARG,starkItems);
+                data.put(MyConfig.LANNISTER_ARG,lannItems);
+                data.put(MyConfig.TARGARYEN_ARG,targItems);
+                EventBus.getDefault().postSticky(data);
 
                 Intent intent = new Intent(SplashActivity.this, MainActivity.class);
-                intent.putParcelableArrayListExtra(MyConfig.STARK_ARG, starkItems);
-                intent.putParcelableArrayListExtra(MyConfig.LANNISTER_ARG, lannItems);
-                intent.putParcelableArrayListExtra(MyConfig.TARGARYEN_ARG, targItems);
                 startActivity(intent);
 
 

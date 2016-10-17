@@ -61,7 +61,7 @@ public class MainActivity extends AppCompatActivity {
 
         //Make custom toolbar which don't created drop shadow
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        toolbar.setTitle(getString(R.string.app_name));
+        toolbar.setTitle(getString(R.string.main_title));
         toolbar.setNavigationIcon(R.drawable.ic_menu_white_24dp);
         setSupportActionBar(toolbar);
 
@@ -85,15 +85,9 @@ public class MainActivity extends AppCompatActivity {
         setupDrawer();
 
 
-        Intent intent = getIntent();
-        ArrayList<ItemsData> stark = intent.getParcelableArrayListExtra(MyConfig.STARK_ARG);
-        ArrayList<ItemsData> lannister = intent.getParcelableArrayListExtra(MyConfig.LANNISTER_ARG);
-        ArrayList<ItemsData> targaryen = intent.getParcelableArrayListExtra(MyConfig.TARGARYEN_ARG);
+
         // Creating The ViewPagerAdapter and Passing Fragment Manager, Titles fot the Tabs and Number Of Tabs.
-        mAdapter = new ViewPagerAdapter(getSupportFragmentManager(), mTitles, mNumbOfTabs,
-                stark,
-                lannister,
-                targaryen);
+        mAdapter = new ViewPagerAdapter(getSupportFragmentManager(), mTitles, mNumbOfTabs);
 
         // Assigning ViewPager View and setting the adapter
         mPager = (ViewPager) findViewById(R.id.pager);
@@ -149,7 +143,6 @@ public class MainActivity extends AppCompatActivity {
                         break;
 
                 }
-
                 //setChecker(item);
                 mItem = item.setChecked(true);
                 mDrawerLayout.closeDrawers();

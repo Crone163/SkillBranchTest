@@ -38,9 +38,8 @@ public class DetailActivity extends AppCompatActivity {
         mCollapsToolbar = (CollapsingToolbarLayout) findViewById(R.id.collapse_toolbar);
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_detail);
-        toolbar.setNavigationIcon(R.drawable.ic_arrow_back_white_24dp);
         setSupportActionBar(toolbar);
-
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         ImageView expandedImage = (ImageView) findViewById(R.id.expanded_image);
 
