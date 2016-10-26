@@ -2,12 +2,12 @@ package com.crone.skillbranchtest.utils;
 
 import android.content.Intent;
 
-import com.crone.skillbranchtest.data.DataManager;
-import com.crone.skillbranchtest.models.HousesDao;
-import com.crone.skillbranchtest.models.Persons;
-import com.crone.skillbranchtest.models.PersonsDao;
-import com.crone.skillbranchtest.models.Titles;
-import com.crone.skillbranchtest.models.TitlesDao;
+import com.crone.skillbranchtest.data.managers.DataManager;
+import com.crone.skillbranchtest.data.storage.models.HousesDao;
+import com.crone.skillbranchtest.data.storage.models.Persons;
+import com.crone.skillbranchtest.data.storage.models.PersonsDao;
+import com.crone.skillbranchtest.data.storage.models.Titles;
+import com.crone.skillbranchtest.data.storage.models.TitlesDao;
 
 import java.util.List;
 

@@ -6,19 +6,13 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-
-    <ImageView
-        android:id="@+id/splashImage"
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
-        android:scaleType="centerCrop" />
-
-    <com.github.silvestrpredko.dotprogressbar.DotProgressBar
+    <com.crone.skillbranchtest.ui.custom_views.dotprogress.DotProgressBar
         android:id="@+id/dot_progress_bar"
         android:layout_width="match_parent"
         android:layout_height="50dp"
         android:layout_gravity="bottom"
         android:layout_marginBottom="50dp"
+        android:visibility="invisible"
         custom:amount="3"
         custom:animationDirection="left"
         custom:duration="@android:integer/config_mediumAnimTime"
