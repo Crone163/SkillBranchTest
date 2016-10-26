@@ -1,0 +1,11 @@
+<resources>
+    <string name="app_name">Alexander Milikhin</string>
+
+    <string name="stark_name">Stark</string>
+    <string name="lann_name">Lannisters</string>
+    <string name="targ_name">Targaryens</string>
+    <string name="main_title">Game of Thrones</string>
+    <string name="error_enable_debug">Error: for more info enable debug</string>
+    <string name="network_issue">Need Internet.</string>
+    <string name="network_issue_button_text">Retry</string>
+</resources>

@@ -5,8 +5,13 @@ import com.crone.skillbranchtest.data.storage.models.DaoSession;
 import com.crone.skillbranchtest.data.storage.models.ItemsData;
 import com.crone.skillbranchtest.data.network.responces.HousesModelRes;
 import com.crone.skillbranchtest.data.network.responces.PersonsModelRes;
+
 import com.crone.skillbranchtest.data.network.RestService;
 import com.crone.skillbranchtest.data.network.ServiceGenerator;
+
+import com.crone.skillbranchtest.data.network.RestService;
+import com.crone.skillbranchtest.data.network.ServiceGenerator;
+
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -47,6 +52,7 @@ public class DataManager {
     //endregion
 
     //region ================== Rest Service ========================
+
     public Call<HousesModelRes> getHouse(String houseId) {
         return mRestService.getHouse(houseId);
     }
