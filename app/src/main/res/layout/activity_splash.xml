@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:custom="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/splash_coordinator"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <com.crone.skillbranchtest.ui.custom_views.dotprogress.DotProgressBar
+        android:id="@+id/dot_progress_bar"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_gravity="bottom"
+        android:layout_marginBottom="50dp"
+        android:visibility="invisible"
+        custom:amount="3"
+        custom:animationDirection="left"
+        custom:duration="@android:integer/config_mediumAnimTime"
+        custom:endColor="@color/colorPrimary"
+        custom:startColor="@color/colorPrimaryDark" />
+</android.support.design.widget.CoordinatorLayout>

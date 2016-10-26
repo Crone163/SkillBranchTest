@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/tools"
+    xmlns:sabd="http://schemas.android.com/apk/res-auto">
+
+    <item
+        android:id="@+id/drawer_stark"
+        android:title="@string/stark_name"
+        android:icon="@drawable/stark_icon"/>
+
+    <item
+        android:id="@+id/drawer_lann"
+        android:title="@string/lann_name"
+        android:icon="@drawable/lanister_icon"/>
+
+    <item
+        android:id="@+id/drawer_targ"
+        android:title="@string/targ_name"
+        android:icon="@drawable/targ_icon"/>
+
+</menu>
