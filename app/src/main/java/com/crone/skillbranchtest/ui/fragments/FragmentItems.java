@@ -1,6 +1,8 @@
 package com.crone.skillbranchtest.ui.fragments;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
@@ -10,24 +12,32 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.crone.skillbranchtest.R;
-import com.crone.skillbranchtest.ui.adapters.AdapterItems;
 import com.crone.skillbranchtest.data.storage.models.ItemsData;
-import com.crone.skillbranchtest.utils.MyConfig;
-
-import org.greenrobot.eventbus.EventBus;
+import com.crone.skillbranchtest.mvp.presenters.HousesFragmentPresenter;
+import com.crone.skillbranchtest.mvp.presenters.IHousesFragmentPresenter;
+import com.crone.skillbranchtest.mvp.views.IHousesFragmentView;
+import com.crone.skillbranchtest.ui.acitivities.DetailActivity;
+import com.crone.skillbranchtest.ui.adapters.AdapterItems;
+import com.crone.skillbranchtest.utils.RecyclerItemClickListener;
 
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
+
+import butterknife.BindView;
+import butterknife.ButterKnife;
 
 
-public class FragmentItems extends Fragment {
+public class FragmentItems extends Fragment implements IHousesFragmentView {
+
+    HousesFragmentPresenter mPresenter = HousesFragmentPresenter.getInstance();
 
     private static final String ARGUMENT_POSITION = "arg_page_position";
 
-    private AdapterItems mAdapter;
-    private int mPosition;
+    private int mTabsPosition;
+    private ArrayList<ItemsData> mItemsData;
+    private int mIcon;
 
+    @BindView(R.id.recycle_view)
+    RecyclerView rv;
 
     public FragmentItems newInstance(int position) {
         FragmentItems fragment = new FragmentItems();
@@ -41,18 +51,40 @@ public class FragmentItems extends Fragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mPosition = getArguments().getInt(ARGUMENT_POSITION);
+        mTabsPosition = getArguments().getInt(ARGUMENT_POSITION);
+        mPresenter.takeView(this);
+        mPresenter.initView();
+    }
+
+    @Override
+    public void onDestroy() {
+        mPresenter.dropView();
+        super.onDestroy();
     }
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_items, container, false);
-        RecyclerView rv = (RecyclerView) view.findViewById(R.id.recycle_view);
+        ButterKnife.bind(this,view);
+
         rv.setHasFixedSize(true);
 
-        mAdapter = new AdapterItems(getDataByPosition(mPosition), getIconByPosition(mPosition));
+        AdapterItems mAdapter = new AdapterItems(mItemsData, mIcon);
         rv.setAdapter(mAdapter);
+
+        rv.addOnItemTouchListener(
+                new RecyclerItemClickListener(getContext(), rv ,new RecyclerItemClickListener.OnItemClickListener() {
+                    @Override public void onItemClick(View view, int position) {
+                        mPresenter.onItemClick(mItemsData,position);
+                    }
+
+                    @Override public void onLongItemClick(View view, int position) {
+                        // do whatever
+                    }
+                })
+        );
+
         LinearLayoutManager llm = new LinearLayoutManager(getActivity());
         rv.setLayoutManager(llm);
         return view;
@@ -68,49 +100,27 @@ public class FragmentItems extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        //When fragment is displayed that allowed to set data
-        //EventBus.getDefault().post(new MessageEvent(mPosition));
     }
 
-    /**
-     * Getting icon for tabs
-     * @param position - tabs number
-     * @return int resource
-     */
-    private int getIconByPosition(int position){
-        switch (position) {
-            case 0:
-                return R.drawable.stark_icon;
-            case 1:
-                return R.drawable.lanister_icon;
-            case 2:
-                return R.drawable.targ_icon;
-            default:
-                return R.mipmap.ic_launcher;
-        }
+    //region ===================== IHousesFragmentView =================
+    @Override
+    public IHousesFragmentPresenter getPresenter() {
+        return mPresenter;
     }
 
-
-    /**
-     * Getting data for RecycleView
-     * @param position - tabs number
-     * @return ArrayList with items
-     */
-    private ArrayList<ItemsData> getDataByPosition(int position){
-        Map<String, ArrayList<ItemsData>> data = EventBus.getDefault().getStickyEvent(HashMap.class);
-        switch (position) {
-            case 0:
-                return data.get(MyConfig.STARK_ARG);
-            case 1:
-                return data.get(MyConfig.LANNISTER_ARG);
-            case 2:
-                return data.get(MyConfig.TARGARYEN_ARG);
-            default:
-                return null;
-        }
+    @Override
+    public void initData() {
+        mItemsData = mPresenter.getDataByPosition(mTabsPosition);
+        mIcon = mPresenter.getIconByPosition(mTabsPosition);
     }
 
-
+    @Override
+    public void onItemClick(int houseId) {
+        mPresenter.sendInfoById(houseId);
+        Intent intent = new Intent(getContext(), DetailActivity.class);
+        getContext().startActivity(intent);
+    }
+    //endregion
 }
 
 

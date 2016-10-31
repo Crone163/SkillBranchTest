@@ -17,4 +17,9 @@ public class MyConfig {
     public static final String LANNISTER_ARG = "lannister_arg";
     public static final String TARGARYEN_ARG = "tar_arg";
 
+
+    public static final int STARK_PAGER = 0;
+    public static final int LANNISTER_PAGER = 1;
+    public static final int TARGARYEN_PAGER = 2;
+
 }

@@ -51,7 +51,6 @@ public class SplashActivity extends AppCompatActivity implements ISplashView {
 
 
     //region ================= ISplashView =================
-
     @Override
     public void showMessage(String message) {
         Snackbar.make(mCoordinatorLayout, message, Snackbar.LENGTH_LONG).show();
@@ -131,7 +130,7 @@ public class SplashActivity extends AppCompatActivity implements ISplashView {
     private void launchMainActivity() {
         Intent intent = new Intent(this, MainActivity.class);
         startActivity(intent);
-        ActivityCompat.finishAffinity(SplashActivity.this);
+        ActivityCompat.finishAffinity(this);
     }
 
 }

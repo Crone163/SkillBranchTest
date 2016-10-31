@@ -15,4 +15,18 @@
     <style name="SplashTheme" parent="Theme.AppCompat.Light.NoActionBar">
         <item name="android:windowBackground">@drawable/background_splash</item>
     </style>
+
+    <style name="ParentButtonMargins">
+        <item name="android:layout_marginLeft">96dp</item>
+        <item name="android:layout_marginStart">96dp</item>
+        <item name="android:layout_marginTop">-12dp</item>
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">44dp</item>
+        <item name="android:visibility">invisible</item>
+    </style>
+
+    <style name="ParentButton" parent="Base.Widget.AppCompat.Button">
+        <item name="colorButtonNormal">@color/colorPrimary</item>
+        <item name="android:textColor">@android:color/white</item>
+    </style>
 </resources>

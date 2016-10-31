@@ -8,4 +8,5 @@
     <string name="error_enable_debug">Error: for more info enable debug</string>
     <string name="network_issue">Need Internet.</string>
     <string name="network_issue_button_text">Retry</string>
+    <string name="error">Error!</string>
 </resources>

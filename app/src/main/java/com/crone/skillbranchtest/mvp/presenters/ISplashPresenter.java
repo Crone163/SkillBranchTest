@@ -1,5 +1,7 @@
 package com.crone.skillbranchtest.mvp.presenters;
 
+import android.support.annotation.Nullable;
+
 import com.crone.skillbranchtest.mvp.views.ISplashView;
 
 /**
@@ -7,8 +9,13 @@ import com.crone.skillbranchtest.mvp.views.ISplashView;
  */
 
 public interface ISplashPresenter {
+
     void takeView(ISplashView view);
+
     void dropView();
+
     void initView();
+
+    @Nullable
     ISplashView getView();
 }

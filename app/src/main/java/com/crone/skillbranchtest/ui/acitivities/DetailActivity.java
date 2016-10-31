@@ -2,131 +2,109 @@ package com.crone.skillbranchtest.ui.acitivities;
 
 import android.content.Intent;
 import android.graphics.Color;
-import android.graphics.PorterDuff;
+
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.Snackbar;
-import android.support.v4.content.ContextCompat;
+
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
-import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.crone.skillbranchtest.BuildConfig;
 import com.crone.skillbranchtest.R;
+import com.crone.skillbranchtest.data.storage.models.CharactersInfo;
+import com.crone.skillbranchtest.mvp.presenters.DetailPresenter;
+import com.crone.skillbranchtest.mvp.views.IDetailView;
 import com.crone.skillbranchtest.utils.MyConfig;
-import com.crone.skillbranchtest.utils.SetIntentParams;
 import com.squareup.picasso.Picasso;
 
-public class DetailActivity extends AppCompatActivity {
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
-    private CollapsingToolbarLayout mCollapsToolbar;
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
+public class DetailActivity extends AppCompatActivity implements IDetailView {
+
+    DetailPresenter mPresenter = DetailPresenter.getInstance();
+
+    @BindView(R.id.collapse_toolbar)
+    CollapsingToolbarLayout mCollapsToolbar;
+    @BindView(R.id.toolbar_detail)
+    Toolbar mToolbar;
+    @BindView(R.id.expanded_image)
+    ImageView mExpandedImage;
+    @BindView(R.id.words_text)
+    TextView mWords;
+    @BindView(R.id.aliases_text)
+    TextView mAliases;
+    @BindView(R.id.born_text)
+    TextView mBorn;
+    @BindView(R.id.titles_text)
+    TextView mTitle;
+    @BindView(R.id.father)
+    TextView mFatherText;
+    @BindView(R.id.mother)
+    TextView mMotherText;
+    @BindView(R.id.father_check)
+    Button mFatherCheck;
+    @BindView(R.id.mother_check)
+    Button mMotherCheck;
+
+    private boolean startOnce;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detail);
-        mCollapsToolbar = (CollapsingToolbarLayout) findViewById(R.id.collapse_toolbar);
+        ButterKnife.bind(this);
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_detail);
-        setSupportActionBar(toolbar);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        mPresenter.takeView(this);
+        mPresenter.initView();
 
-        ImageView expandedImage = (ImageView) findViewById(R.id.expanded_image);
-
+        setSupportActionBar(mToolbar);
+        if (getSupportActionBar() != null)
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         //Make statusbar Transparent when Expanded Appbar
-        Window window = getWindow();
-        window.setFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS,
-                WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
-        window.getAttributes().flags &= (~WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            Window window = getWindow();
             window.setStatusBarColor(Color.TRANSPARENT);
         }
-
-        Intent intent = getIntent();
-        switch ((int)intent.getLongExtra("house_id",-1)) {
-            case MyConfig.STARK_ID:
-                Picasso.with(this).load(R.drawable.starks).fit().into(expandedImage);
-                break;
-            case MyConfig.LANNISTER_ID:
-                Picasso.with(this).load(R.drawable.lannister).fit().into(expandedImage);
-                break;
-            case MyConfig.TARGARYEN_ID:
-                Picasso.with(this).load(R.drawable.targarien).fit().into(expandedImage);
-                break;
-        }
-
-
-        TextView words = (TextView) findViewById(R.id.words_text);
-        words.setText(intent.getStringExtra("words"));
-
-        TextView alies = (TextView) findViewById(R.id.aliases_text);
-        alies.setText(intent.getStringExtra("alies"));
-
-
-        mCollapsToolbar.setTitle(intent.getStringExtra("name"));
-
-        TextView born = (TextView) findViewById(R.id.born_text);
-        born.setText(intent.getStringExtra("born"));
-
-        TextView title = (TextView) findViewById(R.id.titles_text);
-        title.setText(intent.getStringExtra("title"));
-
-        if (intent.getStringExtra("died") != null && intent.getStringExtra("died").length() > 0) {
-            showSnackbar("He was Dead: " + intent.getStringExtra("died"));
-        }
-
-
-        TextView fatherText = (TextView) findViewById(R.id.father);
-        TextView motherText = (TextView) findViewById(R.id.mother);
-
-
-        Button fatherCheck = (Button) findViewById(R.id.father_check);
-        Button motherCheck = (Button) findViewById(R.id.mother_check);
-
-        if (intent.getLongExtra("father",-1) != -1 ) {
-            final long id = intent.getLongExtra("father",-1);
-            fatherText.setVisibility(View.VISIBLE);
-            fatherCheck.setVisibility(View.VISIBLE);
-            fatherCheck.setText(intent.getStringExtra("father_name"));
-            fatherCheck.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    Intent intentReOpen = new Intent(DetailActivity.this, DetailActivity.class);
-                    SetIntentParams.setParams(intentReOpen,id);
-                    startActivity(intentReOpen);
-                }
-            });
-        }
-
-        if (intent.getLongExtra("mother",-1) != -1) {
-            final long id = intent.getLongExtra("mother",-1);
-            motherText.setVisibility(View.VISIBLE);
-            motherCheck.setText(intent.getStringExtra("mother_name"));
-            motherCheck.setVisibility(View.VISIBLE);
-            motherCheck.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    Intent intentReOpen = new Intent(DetailActivity.this, DetailActivity.class);
-                    SetIntentParams.setParams(intentReOpen,id);
-                    startActivity(intentReOpen);
-                }
-            });
-        }
-
-
-        //Background of Buttons
-        fatherCheck.getBackground().setColorFilter(ContextCompat.getColor(this, R.color.colorPrimary), PorterDuff.Mode.MULTIPLY);
-        motherCheck.getBackground().setColorFilter(ContextCompat.getColor(this, R.color.colorPrimary), PorterDuff.Mode.MULTIPLY);
-
     }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+    }
+
+    @Override
+    protected void onDestroy() {
+        mPresenter.dropView();
+        super.onDestroy();
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        EventBus.getDefault().register(this);
+    }
+
+    @Override
+    public void onStop() {
+        EventBus.getDefault().unregister(this);
+        super.onStop();
+    }
+
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -147,6 +125,127 @@ public class DetailActivity extends AppCompatActivity {
     private void showSnackbar(String message) {
         Snackbar.make(findViewById(R.id.coordinator_layout), message, Snackbar.LENGTH_LONG).show();
     }
+
+    @Subscribe(sticky = true, threadMode = ThreadMode.MAIN)
+    public void onEvent(CharactersInfo info) {
+        //для экономии памяти, стикиевент выполняется один раз, чтобы не хранить предыдущие данные в stickyevent
+        if (!startOnce) {
+            mPresenter.setExpandImage(info.houseId.intValue());
+            mPresenter.setToolBarText(info.name);
+            mPresenter.setAliases(info.aliases);
+            mPresenter.setWords(info.words);
+            mPresenter.setBorn(info.born);
+            mPresenter.setTitle(info.title);
+            mPresenter.showDead(info.died);
+            mPresenter.showFather(info.fatherName, info.fatherId);
+            mPresenter.showMother(info.motherName, info.motherId);
+            startOnce = true;
+        }
+    }
+
+    @Override
+    public void setTitle(String title) {
+        mTitle.setText(title);
+    }
+
+    @Override
+    public void setWords(String words) {
+        mWords.setText(words);
+    }
+
+    @Override
+    public void setAliases(String aliases) {
+        mAliases.setText(aliases);
+    }
+
+    @Override
+    public void setBorn(String born) {
+        mBorn.setText(born);
+    }
+
+    @Override
+    public void setToolBarText(String name) {
+        mCollapsToolbar.setTitle(name);
+        mToolbar.setTitle(name);
+    }
+
+    @Override
+    public void showDead(String season) {
+        showSnackbar("He was Dead: " + season);
+
+    }
+
+    @Override
+    public void showFather(String name) {
+        mFatherText.setVisibility(View.VISIBLE);
+        mFatherCheck.setVisibility(View.VISIBLE);
+        mFatherCheck.setText(name);
+    }
+
+    @Override
+    public void showMother(String name) {
+        mMotherText.setVisibility(View.VISIBLE);
+        mMotherCheck.setText(name);
+        mMotherCheck.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void setExpandImage(int housesId) {
+        switch (housesId) {
+            case MyConfig.STARK_ID:
+                Picasso.with(this).load(R.drawable.starks).fit().into(mExpandedImage);
+                break;
+            case MyConfig.LANNISTER_ID:
+                Picasso.with(this).load(R.drawable.lannister).fit().into(mExpandedImage);
+                break;
+            case MyConfig.TARGARYEN_ID:
+                Picasso.with(this).load(R.drawable.targarien).fit().into(mExpandedImage);
+                break;
+        }
+    }
+
+    @Override
+    public void clickMother(final int motherId) {
+        mMotherCheck.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                mPresenter.sendInfoById(motherId);
+                Intent intentReOpen = new Intent(DetailActivity.this, DetailActivity.class);
+                startActivity(intentReOpen);
+            }
+        });
+
+    }
+
+    @Override
+    public void clickFather(final int fatherId) {
+        mFatherCheck.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                mPresenter.sendInfoById(fatherId);
+                Intent intentReOpen = new Intent(DetailActivity.this, DetailActivity.class);
+                startActivity(intentReOpen);
+            }
+        });
+
+    }
+
+    @Override
+    public void showMessage(String message) {
+        showSnackbar(message);
+    }
+
+    @Override
+    public void showError(Throwable e) {
+        if (BuildConfig.DEBUG) {
+            showMessage(e.getMessage());
+            e.printStackTrace();
+        } else {
+            showMessage(getString(R.string.error_enable_debug));
+        }
+    }
+
+
 }
 
 

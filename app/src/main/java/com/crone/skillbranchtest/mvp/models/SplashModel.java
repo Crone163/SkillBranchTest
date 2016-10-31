@@ -48,7 +48,7 @@ public class SplashModel {
         mPersonDao = mDataManager.getDaoSession().getPersonsDao();
     }
 
-    public boolean dataAlreadySet(){
+    public boolean dataAlreadySet() {
         return mDataManager.getStateFromPreferences();
     }
 
@@ -173,13 +173,18 @@ public class SplashModel {
                         }
                     }
                     //определяем к какому дому относится наш персонаж
-                    if (data.idHouse == MyConfig.STARK_ID) {
-                        starkItems.add(data);
-                    } else if (data.idHouse == MyConfig.LANNISTER_ID) {
-                        lannItems.add(data);
-                    } else {
-                        targItems.add(data);
+                    switch ((int) data.idHouse) {
+                        case MyConfig.STARK_ID:
+                            starkItems.add(data);
+                            break;
+                        case MyConfig.LANNISTER_ID:
+                            lannItems.add(data);
+                            break;
+                        case MyConfig.TARGARYEN_ID:
+                            targItems.add(data);
+                            break;
                     }
+
                 }
                 //передаем мапу с данными
                 Map<String, ArrayList<ItemsData>> data = new HashMap<>();
@@ -190,6 +195,7 @@ public class SplashModel {
                 mDataManager.setDataToEventBus(data);
                 //говорим что закончили работу
                 mCallback.onFinish();
+
             }
         });
         myThread.start();

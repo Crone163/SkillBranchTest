@@ -1,21 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
-<menu xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/tools"
-    xmlns:sabd="http://schemas.android.com/apk/res-auto">
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/drawer_stark"
+            android:checked="true"
+            android:icon="@drawable/stark_icon"
+            android:title="@string/stark_name" />
 
-    <item
-        android:id="@+id/drawer_stark"
-        android:title="@string/stark_name"
-        android:icon="@drawable/stark_icon"/>
+        <item
+            android:id="@+id/drawer_lann"
+            android:icon="@drawable/lanister_icon"
+            android:title="@string/lann_name" />
 
-    <item
-        android:id="@+id/drawer_lann"
-        android:title="@string/lann_name"
-        android:icon="@drawable/lanister_icon"/>
-
-    <item
-        android:id="@+id/drawer_targ"
-        android:title="@string/targ_name"
-        android:icon="@drawable/targ_icon"/>
-
+        <item
+            android:id="@+id/drawer_targ"
+            android:icon="@drawable/targ_icon"
+            android:title="@string/targ_name" />
+    </group>
 </menu>
